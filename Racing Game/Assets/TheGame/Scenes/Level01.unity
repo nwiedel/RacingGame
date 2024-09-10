@@ -1011,8 +1011,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4fd3a76220eb0184099c53c813f86cf4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  acceleration: 10
+  acceleration: 20
   currentSpeed: 0
+  isBreaking: 0
+  breakingForce: 10
+  rotationSpeed: 200
 --- !u!1001 &261004657
 PrefabInstance:
   m_ObjectHideFlags: 0
