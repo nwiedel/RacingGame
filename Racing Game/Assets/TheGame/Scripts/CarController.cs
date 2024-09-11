@@ -6,8 +6,8 @@ using UnityEngine;
 public class CarController : MonoBehaviour
 {
     float moveVertical, moveHorizontal;
-    [SerializeField] private float acceleration;
-    [SerializeField] float currentSpeed;
+    [SerializeField] public float acceleration;
+    [SerializeField] public float currentSpeed;
     [SerializeField] private bool isBreaking;
     [SerializeField] private float breakingForce;
     [SerializeField] private float rotationSpeed;
@@ -67,7 +67,6 @@ public class CarController : MonoBehaviour
         {
             // Fahrzeug steht
             myRb2D.angularVelocity = 0f;
-            Debug.Log("Tempo = null");
         }
         
     }
