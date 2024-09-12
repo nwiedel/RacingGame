@@ -10,17 +10,23 @@ public class CameraController : MonoBehaviour
     [SerializeField] float minFOV, maxFOV; // FOV = field of view
     [SerializeField] float zoomSpeed;
 
+    private void Start()
+    {
+        virtualCamera.m_Lens.OrthographicSize = maxFOV;
+    }
+
     // Update is called once per frame
     void Update()
     {
         if(virtualCamera != null && carController != null)
         {
+            var t = Mathf.Abs(carController.currentSpeed / carController.acceleration);
             var targetFieldOfView =
                 Mathf.Lerp(minFOV, maxFOV,
-                carController.currentSpeed / carController.acceleration);
+                t);
             virtualCamera.m_Lens.OrthographicSize =
                 Mathf.MoveTowards(virtualCamera.m_Lens.OrthographicSize,
-                targetFieldOfView, zoomSpeed);
+                targetFieldOfView, zoomSpeed * Time.deltaTime);
         }
     }
 }
