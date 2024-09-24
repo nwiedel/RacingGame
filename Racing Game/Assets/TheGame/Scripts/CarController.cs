@@ -12,12 +12,17 @@ public class CarController : MonoBehaviour
     [SerializeField] private float breakingForce;
     [SerializeField] private float rotationSpeed;
 
+    [SerializeField] private Vector3 jumpScale, originalScale;
+
+    [SerializeField] private float angleThreshold = 15f;
+
     private Rigidbody2D myRb2D;
 
     // Start is called before the first frame update
     private void Start()
     {
         myRb2D = GetComponent<Rigidbody2D>();
+        originalScale = transform.localScale;
     }
 
     // Update is called once per frame
@@ -67,7 +72,40 @@ public class CarController : MonoBehaviour
         {
             // Fahrzeug steht
             myRb2D.angularVelocity = 0f;
+        } 
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        // Prüfen, ob Collision mit Rampe ist
+        if (collision.gameObject.CompareTag("Ramp"))
+        {
+            Vector3 rampUp = collision.transform.up;
+            Vector3 carDirection = transform.up;
+
+            float approachAngle = Vector3.Angle(rampUp, carDirection);
+            print($"Ramp Angle: {approachAngle}");
+
+            if((currentSpeed > 0 && Mathf.Abs(approachAngle) <= angleThreshold)
+                || (currentSpeed < 0 && Mathf.Abs(approachAngle) >= 180f - angleThreshold))
+            {
+                // Skaliere das Fahrzeug nach oben
+                transform.localScale = jumpScale;
+                Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Player"),
+                    LayerMask.NameToLayer("Obstacles"), true);
+            }
+            
         }
-        
+    }
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        // Prüfen, ob Collision mit Rampe ist
+        if (collision.gameObject.CompareTag("Ramp"))
+        {
+            // Skaliere das Fahrzeug nach oben
+            transform.localScale = originalScale;
+            Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Player"),
+                LayerMask.NameToLayer("Obstacles"), false);
+        }
     }
 }
