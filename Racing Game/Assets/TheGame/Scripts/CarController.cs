@@ -15,6 +15,7 @@ public class CarController : MonoBehaviour
     [SerializeField] private Vector3 jumpScale, originalScale;
 
     [SerializeField] private float angleThreshold = 15f;
+    [SerializeField] private BoxCollider RampTrigger;
 
     private Rigidbody2D myRb2D;
 
@@ -93,6 +94,10 @@ public class CarController : MonoBehaviour
                 transform.localScale = jumpScale;
                 Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Player"),
                     LayerMask.NameToLayer("Obstacles"), true);
+                // deaktiviere den 2. Collider
+                // beide Zeilen machn das gleiche
+                //collision.transform.GetChild(0).GetComponent<BoxCollider2D>().enabled = false;
+                collision.transform.GetChild(0).gameObject.SetActive(false);
             }
             
         }
@@ -106,6 +111,10 @@ public class CarController : MonoBehaviour
             transform.localScale = originalScale;
             Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Player"),
                 LayerMask.NameToLayer("Obstacles"), false);
+            // aktiviere den 2. Collider
+            // beide Zeilen machn das gleiche
+            //collision.transform.GetChild(0).GetComponent<BoxCollider2D>().enabled = true;
+            collision.transform.GetChild(0).gameObject.SetActive(true);
         }
     }
 }
