@@ -6,6 +6,7 @@ using UnityEngine;
 public class Checkpoint : MonoBehaviour
 {
     private BoxCollider2D boxCollider2D;
+    public int CheckpointID;
 
     private void Start()
     {
@@ -17,7 +18,13 @@ public class Checkpoint : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            print("Race started!");
+            // Funktion des RaceManagers -> Checkpoint wurde erreicht
+            RaceManager.Instance.PlayerReachedCheckpoint(this);
         }
+    }
+
+    public void SetCheckpointID(int checkpointID)
+    {
+        this.CheckpointID = checkpointID;
     }
 }
