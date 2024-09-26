@@ -35,7 +35,6 @@ public class CarDamage : MonoBehaviour
         // 8 Track Collision
         if(collision.gameObject.layer == 8)
         {
-            Debug.Log(collision.gameObject.name);
             TakeDamage(trackDamage);
         }
         if(collision.gameObject.layer == 7)
@@ -51,11 +50,11 @@ public class CarDamage : MonoBehaviour
         currentHealth -= damage;
         if(currentHealth > 0)
         {
-            UpdatehicleState();
+            UpdateVehicleState();
         }
     }
 
-    public void UpdatehicleState()
+    public void UpdateVehicleState()
     {
         // Sicherstellen, das die Gesundheit nicht unter null fällt
         currentHealth = Mathf.Max(currentHealth, 0);
