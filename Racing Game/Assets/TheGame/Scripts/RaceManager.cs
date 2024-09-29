@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class RaceManager : MonoBehaviour
 {
@@ -11,12 +12,18 @@ public class RaceManager : MonoBehaviour
     [SerializeField] private GameObject[] checkPoints;
     private int currentCheckpointIndex = -1;
 
+    [SerializeField] Canvas menuCanvas;
+
+    public RaceState currentState; // { get; private set; }
+
     public enum RaceState
     {
         Initialized, Started, Paused, Ended
     }
 
-    public RaceState currentState {  get; private set; }
+    // Variablen für die Runden
+    public int maxLaps = 2;
+    private int currentLaps;
 
     private void Awake()
     {
@@ -46,12 +53,16 @@ public class RaceManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (Input.GetButtonDown("Cancel"))
+        {
+            PauseRace();
+        }
     }
 
     public void InitializeRace()
     {
         currentState = RaceState.Initialized;
+        menuCanvas.enabled = false;
     }
 
     public void StartRace()
@@ -65,13 +76,49 @@ public class RaceManager : MonoBehaviour
         }
     }
 
+    public void PauseRace()
+    {
+        if(currentState != RaceState.Ended)
+        {
+            if(currentState == RaceState.Paused)
+            {
+                // Logik um das Rennen weiter zu führen
+                currentState = RaceState.Started;
+                // setze den Spielablauf
+                Time.timeScale = 1f;
+            }
+            else
+            {
+                // Pausieren des Rennens
+                currentState = RaceState.Paused;
+                // Pausieren des Spielablaufs
+                Time.timeScale = 0f;
+            }
+            menuCanvas.enabled = menuCanvas.enabled ? false : true;
+        }
+    }
+
     public void EndRace()
     {
         if(currentState == RaceState.Started)
         {
             currentState = RaceState.Ended;
             Debug.Log("Rennen beendet!");
+            menuCanvas.enabled = menuCanvas.enabled ? false : true;
+            Time.timeScale = 0f;
         }
+    }
+
+    public void QuitRace()
+    {
+        // Anwendung soll geschlossen werden
+        Application.Quit();
+        // Hauptmenu soll geöffnet werden
+    }
+
+    public void RestartRace()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     public void PlayerReachedCheckpoint(Checkpoint checkpoint)
@@ -90,6 +137,21 @@ public class RaceManager : MonoBehaviour
                 if(currentCheckpointIndex >= checkPoints.Length + 1)
                 {
                     // RaceEnd || RoundEnd
+                    //EndRace();
+                    // überprüfe die maximalen Runden
+
+                    // Runde zu Ende -> currentLaps++
+                    currentLaps++;
+                    if (currentLaps >= maxLaps)
+                    {
+                        // Rennen zu Ende
+                        EndRace();
+                    }
+                    else
+                    {
+                        // Setze Checkpoint Index zurück auf Default
+                        currentCheckpointIndex = -1;
+                    }
                 }
             }
         }
